@@ -5,6 +5,10 @@ import exception.EquipmentNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Klasa obsługująca interfejs użytkownika w konsoli.
+ * Umożliwia rejestrację, logowanie, zarządzanie sprzętem oraz wypożyczeniami.
+ */
 public class Menu {
     private final AccountManager accountManager = new AccountManager();
     private final EquipmentManager equipmentManager = new EquipmentManager();
@@ -18,6 +22,9 @@ public class Menu {
         return equipmentManager;
     }
 
+    /**
+     * Wyświetlenie głównego menu programu i przetwarzanie wybór użytkownika.
+     */
     public void showMainMenu() {
         while (true) {
             System.out.println("\n=== MENU GŁÓWNE ===");
@@ -25,20 +32,27 @@ public class Menu {
             System.out.println("2. Logowanie");
             System.out.println("0. Wyjście");
             System.out.print("Wybierz opcję: ");
-            int choice = Integer.parseInt(scanner.nextLine());
 
-            switch (choice) {
-                case 1 -> registerAccount();
-                case 2 -> login();
-                case 0 -> {
-                    System.out.println("Zamykam program.");
-                    return;
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
+                switch (choice) {
+                    case 1 -> registerAccount();
+                    case 2 -> login();
+                    case 0 -> {
+                        System.out.println("Zamykam program.");
+                        return;
+                    }
+                    default -> System.out.println("Nieprawidłowa opcja.");
                 }
-                default -> System.out.println("Nieprawidłowa opcja.");
+            } catch (NumberFormatException e) {
+                System.out.println("Nieprawidłowa opcja, spróbuj ponownie.");
             }
         }
     }
 
+    /**
+     * Proces rejestracji nowego konta (admin lub user).
+     */
     private void registerAccount() {
         System.out.print("Nazwa użytkownika: ");
         String login = scanner.nextLine();
@@ -59,6 +73,9 @@ public class Menu {
         }
     }
 
+    /**
+     * Obsługuje logowanie użytkownika do systemu.
+     */
     private void login() {
         System.out.print("Nazwa użytkownika: ");
         String login = scanner.nextLine();
@@ -76,6 +93,10 @@ public class Menu {
         }
     }
 
+    /**
+     * Menu dostępne dla zalogowanego administratora.
+     * @param admin zalogowany administrator
+     */
     private void adminMenu(Admin admin) {
         while (true) {
             System.out.println("\n=== MENU ADMINA ===");
@@ -86,23 +107,36 @@ public class Menu {
             System.out.println("5. Sprawdź dane użytkowników systemu");
             System.out.println("0. Wyloguj");
             System.out.print("Wybierz opcję: ");
-            int choice = Integer.parseInt(scanner.nextLine());
 
-            switch (choice) {
-                case 1 -> addEquipment();
-                case 2 -> removeEquipment();
-                case 3 -> showAvailableEquipment();
-                case 4 -> RentalRegistry.printAllRentals();
-                case 5 -> accountManager.showAccounts();
-                case 0 -> {
-                    System.out.println("Wylogowano.");
-                    return;
+            try{
+                int choice = Integer.parseInt(scanner.nextLine());
+                switch (choice) {
+                    case 1 -> addEquipment();
+                    case 2 -> removeEquipment();
+                    case 3 -> showAvailableEquipment();
+                    case 4 -> RentalRegistry.printAllRentals();
+                    case 5 -> {
+                        if (admin.getLevel() == 2) {
+                            accountManager.showAccounts();
+                        } else {
+                            System.out.println("Brak uprawnień do wykonania tej operacji.");
+                        }
+                    }
+                    case 0 -> {
+                        System.out.println("Wylogowano.");
+                        return;
+                    }
+                    default -> System.out.println("Nieprawidłowa opcja.");
                 }
-                default -> System.out.println("Nieprawidłowa opcja.");
+            } catch (NumberFormatException e) {
+                System.out.println("Nieprawidłowa opcja, spróbuj ponownie.");
             }
         }
     }
 
+    /**
+     * Metoda dodająca nowy sprzęt do systemu
+     */
     private void addEquipment() {
         System.out.print("Nazwa sprzętu: ");
         String name = scanner.nextLine();
@@ -126,18 +160,25 @@ public class Menu {
                 System.out.println("Cena musi być większa od zera.");
                 return;
             }
+            // Dodanie sprzętu do systemu (lub aktualizacja istniejącego)
             equipmentManager.addEquipment(name, quantity, price);
         } catch (NumberFormatException e) {
             System.out.println("Błędny format liczby. Spróbuj ponownie.");
         }
     }
 
+    /**
+     * Usuwanie sprzętu z magazynu
+     */
     private void removeEquipment() {
         System.out.print("Nazwa sprzętu do usunięcia: ");
         String name = scanner.nextLine();
         equipmentManager.removeEquipment(name);
     }
 
+    /**
+     * Wyświetla listę dostępnego sprzętu w magazynie.
+     */
     private void showAvailableEquipment() {
         List<EquipmentType> equipment = equipmentManager.getAvailableEquipment();
         if (equipment.isEmpty()) {
@@ -147,6 +188,10 @@ public class Menu {
         }
     }
 
+    /**
+     * Menu dostępne dla zalogowanego użytkownika.
+     * @param user zalogowany użytkownik
+     */
     private void userMenu(User user) {
         while (true) {
             System.out.println("\n=== MENU UŻYTKOWNIKA ===");
@@ -156,22 +201,26 @@ public class Menu {
             System.out.println("4. Pokaż dostępny sprzęt");
             System.out.println("0. Wyloguj");
             System.out.print("Wybierz opcję: ");
-            int choice = Integer.parseInt(scanner.nextLine());
 
-            switch (choice) {
-                case 1 -> rentEquipment(user);
-                case 2 -> {
-                    System.out.print("Podaj nazwę sprzętu do zwrotu: ");
-                    String name = scanner.nextLine();
-                    user.returnEquipment(name);
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
+                switch (choice) {
+                    case 1 -> rentEquipment(user);
+                    case 2 -> {
+                        System.out.print("Podaj nazwę sprzętu do zwrotu: ");
+                        String name = scanner.nextLine();
+                        user.returnEquipment(name);
+                    }
+                    case 3 -> user.showRentals();
+                    case 4 -> showAvailableEquipment();
+                    case 0 -> {
+                        System.out.println("Wylogowano.");
+                        return;
+                    }
+                    default -> System.out.println("Nieprawidłowa opcja.");
                 }
-                case 3 -> user.showRentals();
-                case 4 -> showAvailableEquipment();
-                case 0 -> {
-                    System.out.println("Wylogowano.");
-                    return;
-                }
-                default -> System.out.println("Nieprawidłowa opcja.");
+            } catch (NumberFormatException e) {
+                System.out.println("Nieprawidłowa opcja, spróbuj ponownie.");
             }
         }
     }

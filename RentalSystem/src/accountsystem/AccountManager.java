@@ -6,10 +6,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+* Klasa zarządzająca kontami zwykłych użytkowników i administratorów.
+* Pozwala na dodawanie, logowanie i wyświetlanie kont oraz ich wczytywanie z pliku.
+*/
 public class AccountManager {
+    //Przechowuje konta użytkowników
     private final Map<String, User> users = new HashMap<>();
+    //Przechowuje konta administratorów
     private final Map<String, Admin> admins = new HashMap<>();
 
+    /**
+     * Dodawanie nowego użytkownika, jeśli login nie jest już zajęty.
+     * @param login Login użytkownika
+     * @param password Hasło użytkownika
+     */
     public void addUser(String login, String password) {
         if (users.containsKey(login)) {
             System.out.println("Użytkownik o takim loginie już istnieje.");
@@ -23,9 +34,15 @@ public class AccountManager {
         System.out.println("Dodano użytkownika: " +login);
     }
 
+    /**
+     * Dodawanie nowego administratora z określeniem poziomu uprawnień, jeśli login nie jest już zajęty.
+     * @param login Login administratora
+     * @param password Hasło administratora
+     * @param level Poziom uprawnień (1-2)
+     */
     public void addAdmin(String login, String password, int level) {
-        if (level < 1 || level > 3) {
-            System.out.println("Poziom administratora musi być w zakresie od 1 do 3.");
+        if (level < 1 || level > 2) {
+            System.out.println("Poziom administratora musi być w zakresie od 1 do 2.");
             return;
         }
         if (admins.containsKey(login)) {
@@ -40,6 +57,12 @@ public class AccountManager {
         System.out.println("Dodano administratora: " +login);
     }
 
+    /**
+     * Logowanie użytkownika do systemu.
+     * @param login Login
+     * @param password Hasło
+     * @return Zalogowany obiekt Account (User lub Admin) lub null jeśli dane są niepoprawne
+     */
     public Account login(String login, String password) {
         User user = users.get(login);
         if (user != null && user.getPassword().equals(password)) {
@@ -55,6 +78,9 @@ public class AccountManager {
         return null;
     }
 
+    /**
+     * Wyświetlenie wszytskich kont znajdujących się w systemie.
+     */
     public void showAccounts() {
         if (users.isEmpty() && admins.isEmpty()) {
             System.out.println("Nie ma żadnego konta w systemie.\n");
@@ -65,6 +91,13 @@ public class AccountManager {
         }
     }
 
+    /**
+     * Wczytywanie kont użytkowników i administratorów z pliku tekstowego.
+     * Każda linia powinna mieć format:
+     * - admin;login;hasło;poziom
+     * -user;login;hasło
+     * @param filename Wczytuje konta z domyślnego pliku 'data.txt'
+     */
     public void loadAccountsFromFile (String filename) {
         try {
             File plik = new File("data.txt");
@@ -72,6 +105,7 @@ public class AccountManager {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
+                // Dzielimy linię tekstu na segmenty (rozdzielone średnikiem), aby wyodrębnić typ konta, login, hasło i poziom
                 if (parts.length > 0) {
                     if (parts[0].equalsIgnoreCase("admin") && parts.length == 4) {
                         String login = parts[1];

@@ -1,4 +1,4 @@
-ADMIN;Pawel;1234;3
+ADMIN;Pawel;1234;2
 ADMIN;Kacper;4321;1
 USER;Kamila;5678
 USER;Klaudia;8765

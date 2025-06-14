@@ -1,5 +1,9 @@
 package accountsystem;
 
+/**
+ * Klasa reprezentująca administratora systemu.
+ * Dziedziczy po klasie Account i dodaje poziom uprawnień.
+ */
 public class Admin extends Account{
     private int level;
 

@@ -1,8 +1,11 @@
 package accountsystem;
 
+/**
+ * Klasa abstrakcyjna reprezentująca ogólne konto użytkownika systemu.
+ */
 public abstract class Account {
-    protected String login;
-    protected String password;
+    protected String login; // Login użytkownika
+    protected String password; //Hasło użytkownika
 
     public Account(String login, String password) {
         this.login = login;
