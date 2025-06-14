@@ -1,0 +1,4 @@
+Rolki;10;15.30
+Rower;20;20.00
+Hulajnoga;12;10.00
+Wrotki;15;12.00
