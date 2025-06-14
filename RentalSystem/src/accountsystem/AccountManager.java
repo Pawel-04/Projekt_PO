@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class AccountManager {
-    private Map<String, User> users = new HashMap<>();
-    private Map<String, Admin> admins = new HashMap<>();
+    private final Map<String, User> users = new HashMap<>();
+    private final Map<String, Admin> admins = new HashMap<>();
 
     public void addUser(String login, String password) {
         if (users.containsKey(login)) {

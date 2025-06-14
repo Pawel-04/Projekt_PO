@@ -9,13 +9,9 @@ import java.util.List;
 public class User extends Account{
     private List<Rental> rentals;
 
-    public User(String login, String password, List<Rental> rentals) {
-        super(login, password);
-        this.rentals = new ArrayList<>();
-    }
-
     public User(String login, String password) {
         super(login, password);
+        this.rentals = new ArrayList<>();
     }
 
     @Override

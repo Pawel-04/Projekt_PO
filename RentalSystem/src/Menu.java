@@ -106,19 +106,30 @@ public class Menu {
     private void addEquipment() {
         System.out.print("Nazwa sprzętu: ");
         String name = scanner.nextLine();
-        System.out.print("Ilość: ");
-        int quantity = Integer.parseInt(scanner.nextLine());
-        if (quantity <= 0) {
-            System.out.println("Ilość musi być większa od zera.");
-            return;
+
+        int quantity;
+        double price;
+
+        try {
+            System.out.print("Ilość: ");
+            String tempQuantity = scanner.nextLine().trim();
+            quantity = Integer.parseInt(tempQuantity);
+            if (quantity <= 0) {
+                System.out.println("Ilość musi być większa od zera.");
+                return;
+            }
+
+            System.out.print("Cena za wynajem: ");
+            String tempPrice = scanner.nextLine().trim();
+            price = Double.parseDouble(tempPrice);
+            if (price <= 0) {
+                System.out.println("Cena musi być większa od zera.");
+                return;
+            }
+            equipmentManager.addEquipment(name, quantity, price);
+        } catch (NumberFormatException e) {
+            System.out.println("Błędny format liczby. Spróbuj ponownie.");
         }
-        System.out.print("Cena za wynajem: ");
-        double price = Double.parseDouble(scanner.nextLine());
-        if (price < 0) {
-            System.out.println("Cena nie może być ujemna.");
-            return;
-        }
-        equipmentManager.addEquipment(name, quantity, price);
     }
 
     private void removeEquipment() {
