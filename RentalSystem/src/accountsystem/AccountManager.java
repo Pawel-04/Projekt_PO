@@ -1,7 +1,10 @@
 package accountsystem;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class AccountManager {
     private Map<String, User> users = new HashMap<>();
@@ -59,6 +62,38 @@ public class AccountManager {
             System.out.println("Istniejące konta: \n");
             admins.forEach((login, admin) -> System.out.println("# " +login +" - " +admin.getLevel() +" poziom."));
             users.forEach((login, user) -> System.out.println("# " +login +" | Hasło: " +user.getPassword()));
+        }
+    }
+
+    public void loadAccountsFromFile (String filename) {
+        try {
+            File plik = new File("data.txt");
+            Scanner scanner = new Scanner(plik);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                if (parts.length > 0) {
+                    if (parts[0].equalsIgnoreCase("admin") && parts.length == 4) {
+                        String login = parts[1];
+                        String password = parts[2];
+                        int level = Integer.parseInt(parts[3]);
+                        addAdmin(login, password, level);
+                    } else if (parts[0].equalsIgnoreCase("user") && parts.length == 3) {
+                        String login = parts[1];
+                        String password = parts[2];
+                        addUser(login, password);
+                    } else {
+                        System.out.println("Niepoprawny format linii: " +line);
+                    }
+                }
+            }
+            scanner.close();
+            System.out.println("Wczytano konta z pliku: " +filename);
+        } catch (FileNotFoundException e) {
+            System.out.println("Plik nie znaleziony.");
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println("Błędny format liczby w pliku: " +e.getMessage());
         }
     }
 }

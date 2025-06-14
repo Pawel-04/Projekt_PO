@@ -2,10 +2,9 @@ package equipment;
 
 import exception.EquipmentNotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 public class EquipmentManager {
     private final Map<String, EquipmentType> equipmentTypeMap = new HashMap<>();
@@ -58,5 +57,30 @@ public class EquipmentManager {
             throw new EquipmentNotFoundException("Nie znaleziono sprzętu o nazwie: " +name);
         }
         return equipment;
+    }
+
+    public void loadEquipmentFromFile(String filename) {
+        try {
+            File plik = new File("equipment.txt");
+            Scanner scanner = new Scanner(plik);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                if (parts.length == 3) {
+                    String name = parts[0];
+                    int quantity = Integer.parseInt(parts[1]);
+                    double price = Double.parseDouble(parts[2]);
+                    addEquipment(name, quantity, price);
+                } else {
+                    System.out.println("Niepoprawny format linii: " +line);
+                }
+            }
+            System.out.println("Wczytano sprzęt z pliku: " +filename);
+        } catch (FileNotFoundException e) {
+            System.out.println("Plik nie został znaleziony.");
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println("Błędny format liczby w pliku: " +e.getMessage());
+        }
     }
 }
