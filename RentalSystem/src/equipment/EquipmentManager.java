@@ -1,5 +1,7 @@
 package equipment;
 
+import exception.EquipmentNotFoundException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,5 +50,13 @@ public class EquipmentManager {
             }
         }
         return available;
+    }
+
+    public EquipmentType findEquipmentByName(String name) throws EquipmentNotFoundException {
+        EquipmentType equipment = equipmentTypeMap.get(name.toLowerCase());
+        if (equipment == null) {
+            throw new EquipmentNotFoundException("Nie znaleziono sprzętu o nazwie: " +name);
+        }
+        return equipment;
     }
 }
